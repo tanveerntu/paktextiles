@@ -1507,7 +1507,7 @@ elif page == 'Overall Pakistan Trade':
         orientation="h",
         font=dict(family='Roboto', color='#758D99', size=16), 
         yanchor="bottom",
-        y=-0.16,
+        y=-0.18,
         xanchor="right",
         x=1))
     ######################
