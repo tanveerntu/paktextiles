@@ -5207,7 +5207,7 @@ else:
 
     df_madeup['Exports_YTD_vol'] = df_madeup.groupby(['Fiscal Year'])['volume'].cumsum()
     df_madeup['pct_change_yoy_vol'] = df_madeup.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
-    df_madeup
+    
         ######################################
     df_other = df.loc[df['category'].isin(['Other Textiles'])]
     df_other['Exports_YTD'] = df_other.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
@@ -5275,8 +5275,8 @@ else:
     ytd_towel = df_towels.Exports_YTD.iloc[-1]
     pct_towel = df_towels.Exports_YTD.iloc[-13]
     ###########
-    #ytd_madeup = df_madeup.Exports_YTD.iloc[-1]
-    #pct_madeup = df_madeup.Exports_YTD.iloc[-13]
+    ytd_madeup = df_madeup.Exports_YTD.iloc[-1]
+    pct_madeup = df_madeup.Exports_YTD.iloc[-13]
     ###########
     ytd_other = df_other.Exports_YTD.iloc[-1]
     pct_other = df_other.Exports_YTD.iloc[-13]
