@@ -5415,12 +5415,12 @@ else:
     ))
 
     fig.add_trace(go.Indicator(
-        value=ytd_madeups,
+        value=ytd_madeup,
         mode="number+delta",
         number={'prefix': "$", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
         title={"text": "Madeups"},
         title_font=dict(size=25, color='#e05020', family="roboto"),
-        delta={'reference':pct_madeups, 'valueformat': '.0%', 'relative':True},
+        delta={'reference':pct_madeup, 'valueformat': '.0%', 'relative':True},
         domain = {'row': 1, 'column': 3}
     ))
 
