@@ -5201,12 +5201,12 @@ else:
     df_cyarn['Exports_YTD_vol'] = df_cyarn.groupby(['Fiscal Year'])['volume'].cumsum()
     df_cyarn['pct_change_yoy_vol'] = df_cyarn.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
         ######################################
-    df_madeups = df.loc[df['category'].isin(['Madeups'])]
-    df_madeups['Exports_YTD'] = df_madeups.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
-    df_madeups['pct_change_yoy'] = df_madeups.groupby(['month'])['Exports_YTD'].pct_change()*100
+    df_madeup = df.loc[df['category'].isin(['Madeups'])]
+    df_madeup['Exports_YTD'] = df_madeup.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
+    df_madeup['pct_change_yoy'] = df_madeup.groupby(['month'])['Exports_YTD'].pct_change()*100
 
-    df_madeups['Exports_YTD_vol'] = df_madeups.groupby(['Fiscal Year'])['volume'].cumsum()
-    df_madeups['pct_change_yoy_vol'] = df_madeups.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
+    df_madeup['Exports_YTD_vol'] = df_madeup.groupby(['Fiscal Year'])['volume'].cumsum()
+    df_madeup['pct_change_yoy_vol'] = df_madeup.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
         ######################################
     df_other = df.loc[df['category'].isin(['Other Textiles'])]
     df_other['Exports_YTD'] = df_other.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
@@ -5274,8 +5274,8 @@ else:
     ytd_towel = df_towels.Exports_YTD.iloc[-1]
     pct_towel = df_towels.Exports_YTD.iloc[-13]
     ###########
-    ytd_madeups = df_madeups.Exports_YTD.iloc[-1]
-    pct_madeups = df_madeups.Exports_YTD.iloc[-13]
+    ytd_madeups = df_madeup.Exports_YTD.iloc[-1]
+    pct_madeups = df_madeup.Exports_YTD.iloc[-13]
     ###########
     ytd_other = df_other.Exports_YTD.iloc[-1]
     pct_other = df_other.Exports_YTD.iloc[-13]
@@ -5315,8 +5315,8 @@ else:
     ytd_towel_v = df_towels.Exports_YTD_vol.iloc[-1]
     pct_towel_v = df_towels.Exports_YTD_vol.iloc[-13]
     ###########
-    ytd_madeups_v = df_madeups.Exports_YTD_vol.iloc[-1]
-    pct_madeups_v = df_madeups.Exports_YTD_vol.iloc[-13]
+    ytd_madeups_v = df_madeup.Exports_YTD_vol.iloc[-1]
+    pct_madeups_v = df_madeup.Exports_YTD_vol.iloc[-13]
     ###########
     ytd_other_v = df_other.Exports_YTD_vol.iloc[-1]
     pct_other_v = df_other.Exports_YTD_vol.iloc[-13]
