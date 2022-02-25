@@ -5274,8 +5274,8 @@ else:
     ytd_towel = df_towels.Exports_YTD.iloc[-1]
     pct_towel = df_towels.Exports_YTD.iloc[-13]
     ###########
-    ytd_madeups = df_madeup.Exports_YTD.iloc[-1]
-    pct_madeups = df_madeup.Exports_YTD.iloc[-13]
+    #ytd_madeups = df_madeup.Exports_YTD.iloc[-1]
+    #pct_madeups = df_madeup.Exports_YTD.iloc[-13]
     ###########
     ytd_other = df_other.Exports_YTD.iloc[-1]
     pct_other = df_other.Exports_YTD.iloc[-13]
@@ -5315,8 +5315,7 @@ else:
     ytd_towel_v = df_towels.Exports_YTD_vol.iloc[-1]
     pct_towel_v = df_towels.Exports_YTD_vol.iloc[-13]
     ###########
-    ytd_madeups_v = df_madeup.Exports_YTD_vol.iloc[-1]
-    pct_madeups_v = df_madeup.Exports_YTD_vol.iloc[-13]
+   
     ###########
     ytd_other_v = df_other.Exports_YTD_vol.iloc[-1]
     pct_other_v = df_other.Exports_YTD_vol.iloc[-13]
@@ -5414,15 +5413,15 @@ else:
         domain = {'row': 1, 'column': 2}
     ))
 
-    fig.add_trace(go.Indicator(
-        value=ytd_madeups,
-        mode="number+delta",
-        number={'prefix': "$", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
-        title={"text": "Madeups"},
-        title_font=dict(size=25, color='#e05020', family="roboto"),
-        delta={'reference':pct_madeups, 'valueformat': '.0%', 'relative':True},
-        domain = {'row': 1, 'column': 3}
-    ))
+    #fig.add_trace(go.Indicator(
+     #   value=ytd_madeups,
+      #  mode="number+delta",
+       # number={'prefix': "$", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        #title={"text": "Madeups"},
+        #title_font=dict(size=25, color='#e05020', family="roboto"),
+     #   delta={'reference':pct_madeups, 'valueformat': '.0%', 'relative':True},
+      #  domain = {'row': 1, 'column': 3}
+    #))
 
     fig.add_trace(go.Indicator(
         value=ytd_other,
