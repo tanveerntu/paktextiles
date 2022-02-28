@@ -1070,68 +1070,6 @@ if page == 'Cotton Statistics':
 
 
     ###########################
-    ###########################
-    #cotton map of Pakistan
-    ###########################
-    import json
-    pak_districts = json.load(open("pakistan_districts.geojson", 'r'))
-
-    district_id_map = {}
-    for feature in pak_districts["features"]:
-        feature["id"] = feature["properties"]["objectid"]
-        district_id_map[feature['properties']['districts']] = feature['id']
-
-    df['id']=df['District'].apply(lambda x:district_id_map[x])
-    #st.title("Cotton Map of Pakistan")
-
-    fig = go.Figure(go.Choroplethmapbox(geojson=pak_districts, locations=df.id, z=df.Bales,
-                                        text= df['District'], 
-                                        hoverinfo= 'text+z',
-                                        reversescale=True,
-                                                                            ))
-    fig.update_layout(mapbox_style="stamen-terrain",
-                    mapbox_zoom=5.0, mapbox_center = {"lat": 30.3753, "lon": 69.3451})
-    fig.update_traces(text=df['District'])
-
-    fig.update_layout(
-        autosize=True, height=650, width=1400,
-    )
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-    #####
-    #st.plotly_chart(fig)
-
-    ######################
-    #######################
-    st.title("Cotton Map of Pakistan")
-
-    #satellite-streets
-    #############
-
-    fig = px.scatter_mapbox(df, 
-                        lat="Lat", 
-                        lon="Long", 
-                        hover_name="District", 
-                        hover_data=["District", "Bales"],
-                        color_discrete_sequence=["Red"], 
-                        size="Bales",
-                        animation_frame="Year",
-                        zoom=5,
-                        height=300
-                        )
-
-
-
-    fig.update_layout(mapbox_style="open-street-map")
-
-
-    fig.update_layout(
-        autosize=True, height=700, width=1400,
-    )
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-    st.plotly_chart(fig, use_container_width=True)
-
-    ###########################
     ########################
     #monthly cotton imports
 
@@ -1252,6 +1190,68 @@ if page == 'Cotton Statistics':
                 arrowhead=1)
 
     st.plotly_chart(fig, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+    ###########################
+    ###########################
+    #cotton map of Pakistan
+    ###########################
+    import json
+    pak_districts = json.load(open("pakistan_districts.geojson", 'r'))
+
+    district_id_map = {}
+    for feature in pak_districts["features"]:
+        feature["id"] = feature["properties"]["objectid"]
+        district_id_map[feature['properties']['districts']] = feature['id']
+
+    df['id']=df['District'].apply(lambda x:district_id_map[x])
+    #st.title("Cotton Map of Pakistan")
+
+    fig = go.Figure(go.Choroplethmapbox(geojson=pak_districts, locations=df.id, z=df.Bales,
+                                        text= df['District'], 
+                                        hoverinfo= 'text+z',
+                                        reversescale=True,
+                                                                            ))
+    fig.update_layout(mapbox_style="stamen-terrain",
+                    mapbox_zoom=5.0, mapbox_center = {"lat": 30.3753, "lon": 69.3451})
+    fig.update_traces(text=df['District'])
+
+    fig.update_layout(
+        autosize=True, height=650, width=1400,
+    )
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+    #####
+    #st.plotly_chart(fig)
+
+    ######################
+    #######################
+    st.title("Cotton Map of Pakistan")
+
+    #satellite-streets
+    #############
+
+    fig = px.scatter_mapbox(df, 
+                        lat="Lat", 
+                        lon="Long", 
+                        hover_name="District", 
+                        hover_data=["District", "Bales"],
+                        color_discrete_sequence=["Red"], 
+                        size="Bales",
+                        animation_frame="Year",
+                        zoom=5,
+                        height=300
+                        )
+
+
+
+    fig.update_layout(mapbox_style="open-street-map")
+
+
+    fig.update_layout(
+        autosize=True, height=700, width=1400,
+    )
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    st.plotly_chart(fig, use_container_width=True)
+
 
 ########################################
 
