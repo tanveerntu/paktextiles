@@ -2566,6 +2566,114 @@ elif page == 'Cotton Cloth Exports':
 
     #####################################
     #####################################
+    # cloth chart export price
+
+    df_cloth['pct_change_yoy_price'] = df_cloth.groupby(['month'])['unit_price'].pct_change()*100
+    df_cloth_2020_21 = df_cloth.loc[df_cloth['Fiscal Year'].isin(['2020-2021'])]
+    df_cloth_2021_22 = df_cloth.loc[df_cloth['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_cloth_2020_21['month'], y=df_cloth_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_cloth_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_cloth_2021_22['month'], y=df_cloth_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_cloth_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_cloth_2021_22['month'], 
+                            y=df_cloth_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_cloth_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Kg', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Cotton Cloth Average Export Price",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+
+    #####################################
    
 elif page == 'Readymade Garments Exports':
 
@@ -2819,7 +2927,115 @@ elif page == 'Readymade Garments Exports':
         x=1
     ))
     st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+    #####################################
+    # garment chart export price
 
+    df_garment['pct_change_yoy_price'] = df_garment.groupby(['month'])['unit_price'].pct_change()*100
+    df_garment_2020_21 = df_garment.loc[df_garment['Fiscal Year'].isin(['2020-2021'])]
+    df_garment_2021_22 = df_garment.loc[df_garment['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_garment_2020_21['month'], y=df_garment_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_garment_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_garment_2021_22['month'], y=df_garment_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_garment_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_garment_2021_22['month'], 
+                            y=df_garment_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_garment_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Dozen', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Garments Average Export Price",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+
+    #####################################
 
 elif page == 'Knitwear Exports':
 
@@ -3069,6 +3285,115 @@ elif page == 'Knitwear Exports':
         x=1
     ))
     st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+    #####################################
+    # garment chart export price
+
+    df_knitwear['pct_change_yoy_price'] = df_knitwear.groupby(['month'])['unit_price'].pct_change()*100
+    df_knitwear_2020_21 = df_knitwear.loc[df_knitwear['Fiscal Year'].isin(['2020-2021'])]
+    df_knitwear_2021_22 = df_knitwear.loc[df_knitwear['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_knitwear_2020_21['month'], y=df_knitwear_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_knitwear_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_knitwear_2021_22['month'], y=df_knitwear_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_knitwear_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_knitwear_2021_22['month'], 
+                            y=df_knitwear_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_knitwear_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Dozen', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Knitwear Average Export Price",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+
+    #####################################
 
 #################
 elif page == 'Artifical Silk & Synthetics Exports':
@@ -3288,6 +3613,113 @@ elif page == 'Artifical Silk & Synthetics Exports':
     #title
     fig_ytd.add_annotation(
                 text="Art. Silk & Synthetics Exports by Volume",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+   #####################################
+    # tents yarn chart export price
+
+    df_s['pct_change_yoy_price'] = df_s.groupby(['month'])['unit_price'].pct_change()*100
+    df_s_2020_21 = df_s.loc[df_s['Fiscal Year'].isin(['2020-2021'])]
+    df_s_2021_22 = df_s.loc[df_s['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_s_2020_21['month'], y=df_s_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_s_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_s_2021_22['month'], y=df_s_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_s_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_s_2021_22['month'], 
+                            y=df_s_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_s_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Kg', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Art. Silk & Synthetics Average Export Price",
                 font=dict(family='Fjalla one', color='#006BA2', size=36), 
                 xref="paper", yref="paper",
                 x=0, y=1.18, 
@@ -3961,6 +4393,113 @@ elif page == 'Tents & Tarpaulines Exports':
         x=1
     ))
     st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+   #####################################
+    # tents yarn chart export price
+
+    df_tents['pct_change_yoy_price'] = df_tents.groupby(['month'])['unit_price'].pct_change()*100
+    df_tents_2020_21 = df_tents.loc[df_tents['Fiscal Year'].isin(['2020-2021'])]
+    df_tents_2021_22 = df_tents.loc[df_tents['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_tents_2020_21['month'], y=df_tents_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_tents_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_tents_2021_22['month'], y=df_tents_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_tents_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_tents_2021_22['month'], 
+                            y=df_tents_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_tents_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Kg', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Tents & Tarpaulines Average Export Price",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
 
 
 ###################
@@ -4181,6 +4720,114 @@ elif page == 'Non-Cotton Yarn Exports':
     #title
     fig_ytd.add_annotation(
                 text="Non-Cotton Exports by Volume",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+
+    #####################################
+    # non-cotton yarn chart export price
+
+    df_ncyarn['pct_change_yoy_price'] = df_ncyarn.groupby(['month'])['unit_price'].pct_change()*100
+    df_ncyarn_2020_21 = df_ncyarn.loc[df_ncyarn['Fiscal Year'].isin(['2020-2021'])]
+    df_ncyarn_2021_22 = df_ncyarn.loc[df_ncyarn['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_ncyarn_2020_21['month'], y=df_ncyarn_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_ncyarn_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_ncyarn_2021_22['month'], y=df_ncyarn_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_ncyarn_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_ncyarn_2021_22['month'], 
+                            y=df_ncyarn_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_ncyarn_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Kg', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Non-Cotton Yarn Average Export Price",
                 font=dict(family='Fjalla one', color='#006BA2', size=36), 
                 xref="paper", yref="paper",
                 x=0, y=1.18, 
@@ -4467,6 +5114,115 @@ elif page == 'Bedwear Exports':
         x=1
     ))
     st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+    #####################################
+    # garment chart export price
+
+    df_bedwear['pct_change_yoy_price'] = df_bedwear.groupby(['month'])['unit_price'].pct_change()*100
+    df_bedwear_2020_21 = df_bedwear.loc[df_bedwear['Fiscal Year'].isin(['2020-2021'])]
+    df_bedwear_2021_22 = df_bedwear.loc[df_bedwear['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_bedwear_2020_21['month'], y=df_bedwear_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_bedwear_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_bedwear_2021_22['month'], y=df_bedwear_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_bedwear_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_bedwear_2021_22['month'], 
+                            y=df_bedwear_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_bedwear_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Kg', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Bedwear Average Export Price",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+
+    #####################################
 
     ################
 elif page == 'Towel Exports':
@@ -4719,6 +5475,115 @@ elif page == 'Towel Exports':
         x=1
     ))
     st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+    #####################################
+    # towels chart export price
+
+    df_towels['pct_change_yoy_price'] = df_towels.groupby(['month'])['unit_price'].pct_change()*100
+    df_towels_2020_21 = df_towels.loc[df_towels['Fiscal Year'].isin(['2020-2021'])]
+    df_towels_2021_22 = df_towels.loc[df_towels['Fiscal Year'].isin(['2021-2022'])]
+
+    fig_ytd = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.01, 
+                        row_heights=[0.20,0.80])
+    #fig_ytd = go.Figure()
+    #fig_ytd = make_subplots(specs=[[{'secondary_y': True}]], rows=1, cols=1) # to make subplot with 1 row and 1 col
+
+    # Add traces
+    fig_ytd.add_trace(go.Bar(x=df_towels_2020_21['month'], y=df_towels_2020_21['unit_price'],
+                        name='Price in 2020-21', 
+                        text=df_towels_2020_21['unit_price'],
+                        textposition='auto',
+                        texttemplate='$%{text:.2f}',
+                        hovertemplate='Exports price:$%{y}'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_towels_2021_22['month'], y=df_towels_2021_22['unit_price'],
+                        mode='markers+lines+text',
+                        marker=dict(size=16, color="Green"), 
+                        name='Price in 2021-22',
+                        text=df_towels_2021_22['unit_price'],
+                        textposition='bottom right',
+                        texttemplate="$%{text:.2f}",
+                        line=dict(color='Green', width=4),
+                        hovertemplate='Exports price:$%{y}B'
+                        ), row=2, col=1)
+    fig_ytd.add_trace(go.Scatter(x=df_towels_2021_22['month'], 
+                            y=df_towels_2021_22['pct_change_yoy_price'], 
+                            mode="lines+markers+text", 
+                            marker=dict(size=16, color="Red"), 
+                            name="%Change from previous year", 
+                            text=df_towels_2021_22['pct_change_yoy_price'],
+                            textposition='middle right',
+                            texttemplate="%{text:.2s}%",
+                            line=dict(color='Red', width=1, dash='dash'),
+                            hovertemplate='%{y}',
+                            ), row=1, col=1 )
+    #fig_ytd.update_yaxes(title_text="Cumulative Exports in US$")
+    image = Image.open('logo.png')                    
+    #st.image(logo.png)
+    fig_ytd.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=1, y=-0.2,  #image postion on chart
+            sizex=0.1, sizey=0.1, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    fig_ytd.update_layout(
+        autosize=True, height=650, width=1050,
+        legend_traceorder="reversed",
+        margin=dict(t=90, b=110, l=90, r=40),
+        title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+        xaxis_title='', yaxis_title="",
+        plot_bgcolor='#ffffff',
+        paper_bgcolor='#ffffff',
+        font=dict(color='#111111', size=18, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+    #updates axes
+    fig_ytd.update_xaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_yaxes(visible=False, row=1, col=1 ) #range=[0, 100] if need to set y-axis range
+
+    fig_ytd.update_yaxes(showline=True, linewidth=2, linecolor='black', row=2, col=1 )
+    fig_ytd.update_xaxes(tickangle=0, tickfont=dict(family='Roboto', color='black', size=24))
+    fig_ytd.update_yaxes(title='US$ per Kg', title_font=dict(family='Roboto', color='black', size=20), row=2, col=1)
+    fig_ytd.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#758D99')
+    ###############
+    #title
+    fig_ytd.add_annotation(
+                text="Pakistan Towels Average Export Price",
+                font=dict(family='Fjalla one', color='#006BA2', size=36), 
+                xref="paper", yref="paper",
+                x=0, y=1.18, 
+                showarrow=False,
+                arrowhead=1)
+
+    #subtitle
+    fig_ytd.add_annotation(
+                text="current year vs. previous year",
+                font=dict(family='roboto', color='black', size=24), 
+                xref="paper", yref="paper",
+                x=0, y=1.10, 
+                showarrow=False,
+                arrowhead=1)
+    #data reference
+    fig_ytd.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0, y=-0.2, 
+                showarrow=False,
+                arrowhead=1)
+
+    fig_ytd.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    st.plotly_chart(fig_ytd, use_container_width=True) # to show Figure; container width true makes fig. size responsive
+
+    #####################################
 
 elif page == 'Total Textile Exports':
     #st.title("Pakistan Textile Exports")
@@ -5165,6 +6030,7 @@ else:
 
     df_towels['Exports_YTD_vol'] = df_towels.groupby(['Fiscal Year'])['volume'].cumsum()
     df_towels['pct_change_yoy_vol'] = df_towels.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
+    
     ######################################
     df_knitwear = df.loc[df['category'].isin(['Knitwear'])]
     df_knitwear['Exports_YTD'] = df_knitwear.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
@@ -5172,6 +6038,9 @@ else:
 
     df_knitwear['Exports_YTD_vol'] = df_knitwear.groupby(['Fiscal Year'])['volume'].cumsum()
     df_knitwear['pct_change_yoy_vol'] = df_knitwear.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
+    
+    df_knitwear['pct_change_yoy_price'] = df_knitwear.groupby(['month'])['unit_price'].pct_change()*100
+
         ######################################
     df_bedwear = df.loc[df['category'].isin(['Bedwear'])]
     df_bedwear['Exports_YTD'] = df_bedwear.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
@@ -5207,7 +6076,6 @@ else:
 
     df_madeup['Exports_YTD_vol'] = df_madeup.groupby(['Fiscal Year'])['volume'].cumsum()
     df_madeup['pct_change_yoy_vol'] = df_madeup.groupby(['month'])['Exports_YTD_vol'].pct_change()*100
-    
         ######################################
     df_other = df.loc[df['category'].isin(['Other Textiles'])]
     df_other['Exports_YTD'] = df_other.groupby(['Fiscal Year'])['Exports_US$'].cumsum()
@@ -5275,8 +6143,8 @@ else:
     ytd_towel = df_towels.Exports_YTD.iloc[-1]
     pct_towel = df_towels.Exports_YTD.iloc[-13]
     ###########
-    ytd_madeup = df_madeup.Exports_YTD.iloc[-1]
-    pct_madeup = df_madeup.Exports_YTD.iloc[-13]
+    ytd_madeups = df_madeup.Exports_YTD.iloc[-1]
+    pct_madeups = df_madeup.Exports_YTD.iloc[-13]
     ###########
     ytd_other = df_other.Exports_YTD.iloc[-1]
     pct_other = df_other.Exports_YTD.iloc[-13]
@@ -5316,7 +6184,7 @@ else:
     ytd_towel_v = df_towels.Exports_YTD_vol.iloc[-1]
     pct_towel_v = df_towels.Exports_YTD_vol.iloc[-13]
     ###########
-   
+
     ###########
     ytd_other_v = df_other.Exports_YTD_vol.iloc[-1]
     pct_other_v = df_other.Exports_YTD_vol.iloc[-13]
@@ -5335,6 +6203,46 @@ else:
     ###########
     ytd_crdcotton_v = df_crdcotton.Exports_YTD_vol.iloc[-1]
     pct_crdcotton_v = df_crdcotton.Exports_YTD_vol.iloc[-13]
+
+#############unit price
+    ###########
+    ytd_knitwear_p = df_knitwear.unit_price.iloc[-1]
+    pct_knitwear_p = df_knitwear.unit_price.iloc[-13]
+    ###########
+    ytd_bedwear_p = df_bedwear.unit_price.iloc[-1]
+    pct_bedwear_p = df_bedwear.unit_price.iloc[-13]
+    ###########
+    ytd_garments_p = df_garments.unit_price.iloc[-1]
+    pct_garments_p = df_garments.unit_price.iloc[-13]
+    ###########
+    ytd_cloth_p = df_cloth.unit_price.iloc[-1]
+    pct_cloth_p = df_cloth.unit_price.iloc[-13]
+    ###########
+    ytd_cyarn_p = df_cyarn.unit_price.iloc[-1]
+    pct_cyarn_p = df_cyarn.unit_price.iloc[-13]
+    ###########
+    ytd_towel_p = df_towels.unit_price.iloc[-1]
+    pct_towel_p = df_towels.unit_price.iloc[-13]
+    ###########
+
+    ###########
+    ytd_other_p = df_other.unit_price.iloc[-1]
+    pct_other_p = df_other.unit_price.iloc[-13]
+        ###########
+    ytd_ass_p = df_ass.unit_price.iloc[-1]
+    pct_ass_p = df_ass.unit_price.iloc[-13]
+    ###########
+    ytd_tt_p = df_tt.unit_price.iloc[-1]
+    pct_tt_p = df_tt.unit_price.iloc[-13]
+    ###########
+    ytd_ncyarn_p = df_ncyarn.unit_price.iloc[-1]
+    pct_ncyarn_p = df_ncyarn.unit_price.iloc[-13]
+    ###########
+    ytd_rcotton_p = df_rcotton.unit_price.iloc[-1]
+    pct_rcotton_p = df_rcotton.unit_price.iloc[-13]
+    ###########
+    ytd_crdcotton_p = df_crdcotton.unit_price.iloc[-1]
+    pct_crdcotton_p = df_crdcotton.unit_price.iloc[-13]
     #st.header(f'Pakistan Exports Jun-{recent_month} 2021-22')
 
 ###################################
@@ -5415,12 +6323,12 @@ else:
     ))
 
     fig.add_trace(go.Indicator(
-        value=ytd_madeup,
+        value=ytd_madeups,
         mode="number+delta",
         number={'prefix': "$", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
         title={"text": "Madeups"},
         title_font=dict(size=25, color='#e05020', family="roboto"),
-        delta={'reference':pct_madeup, 'valueformat': '.0%', 'relative':True},
+        delta={'reference':pct_madeups, 'valueformat': '.0%', 'relative':True},
         domain = {'row': 1, 'column': 3}
     ))
 
@@ -5647,6 +6555,157 @@ else:
 
     fig.add_annotation(
             text=f"Pakistan Textile Exports by Volume: Jul-{recent_month} 2021-22",
+            font=dict(family='Fjalla one', color='#006BA2', size=36), 
+            xref="paper", yref="paper",
+            x=0.5, y=1.17, 
+            showarrow=False,
+            arrowhead=1)
+
+    fig.update_layout(
+    autosize=True, height=650, width=1100,
+    margin=dict(t=100, b=20, l=40, r=40),
+    title_font=dict(size=25, color='#111111', family="fjalla one, sans-serif"),
+    plot_bgcolor='#ededed',
+    paper_bgcolor='#ffffff',
+    font=dict(color='#006BA2', size=16, family="roboto, sans-serif"),    #font of lablels of axises
+    )
+
+    #data reference
+    fig.add_annotation(
+                text="Source: Pakistan Bureau of Statistics",
+                font=dict(family='Fjalla one', color='#758D99', size=20), 
+                xref="paper", yref="paper",
+                x=0.96, y=0, 
+                showarrow=False,
+                arrowhead=1)
+
+    image = Image.open('logo.png')                    
+    fig.add_layout_image(
+        dict(
+            source=image,
+            xref="paper", yref="paper",
+            x=0.96, y=0.1,  #image postion on chart
+            sizex=0.15, sizey=0.15, #image size on chart
+            xanchor="right", yanchor="bottom"
+        ))
+
+    st.plotly_chart(fig, use_container_width=True)
+
+###################################
+###################################
+# price indicators
+
+    fig = go.Figure()
+    fig.update_layout(
+    grid = {'rows': 4, 'columns': 4, 'pattern': "independent"})
+
+    fig.add_trace(go.Indicator(
+        value=ytd_knitwear_p,
+        mode="number+delta",
+        number={'suffix': ", $/D", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Knitwear"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_knitwear_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 0, 'column': 0}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_garments_p,
+        mode="number+delta",
+        number={'suffix': ", $/D", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Garments"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_garments_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 0, 'column': 1}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_bedwear_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Bedwear"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_bedwear_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 0, 'column': 2}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_cloth_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Cotton Cloth"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_cloth_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 0, 'column': 3}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_cyarn_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Cotton Yarn"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_cyarn_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 1, 'column': 0}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_towel_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Towels"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_towel_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 1, 'column': 1}
+    ))
+
+
+    fig.add_trace(go.Indicator(
+        value=ytd_ass_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Art. Silk & Synthetics"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_ass_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 1, 'column': 2}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_tt_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Tents, Tarpaulines"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_tt_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 1, 'column': 3}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_ncyarn_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Non-Cotton Yarn"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_ncyarn_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 2, 'column': 0}
+    ))
+
+    fig.add_trace(go.Indicator(
+        value=ytd_rcotton_p,
+        mode="number+delta",
+        number={'suffix': ", $/Kg", "font":{"size":50, "color":'#000000', "family":"helvetica neue"}},
+        title={"text": "Raw Cotton"},
+        title_font=dict(size=25, color='#e05020', family="roboto"),
+        delta={'reference':pct_rcotton_p, 'valueformat': '.0%', 'relative':True},
+        domain = {'row': 2, 'column': 1}
+    ))
+
+
+    #fig.update_layout(height = 600) #changing this will adjust gap between rows
+
+
+    fig.add_annotation(
+            text=f"Pakistan Textile Exports by Unit Price: Jul-{recent_month} 2021-22",
             font=dict(family='Fjalla one', color='#006BA2', size=36), 
             xref="paper", yref="paper",
             x=0.5, y=1.17, 
